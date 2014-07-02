@@ -12,7 +12,7 @@
 
 SpecBegin(ShellSplit)
 
-describe(@"basic positive tests", ^{
+describe(@"tests of core functionality", ^{
     it(@"should split strings without quotes by whitespace", ^{
         NSString *fixture = @"one two three";
         NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
@@ -36,9 +36,7 @@ describe(@"basic positive tests", ^{
         NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
         expect(components).to.equal(@[ @"one", @"'two three'", @"\"four five\"", @"six" ]);
     });
-});
 
-describe(@"basic negative tests", ^{
     it(@"should reject strings with unbalanced single quotes", ^{
         NSString *fixture = @"one 'two three";
         expect(^{ [fixture componentsSplitUsingShellQuotingRules]; }).to.raise(nil);
