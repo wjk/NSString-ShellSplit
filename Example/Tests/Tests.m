@@ -48,4 +48,24 @@ describe(@"tests of core functionality", ^{
     });
 });
 
+describe(@"unescaping tests", ^{
+    it(@"should unescape double-quoted strings correctly (pass #1)", ^{
+        NSString *fixture = @"one \"two \\\" three\"";
+        NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
+        expect(components).to.equal(@[ @"one", @"two \" three" ]);
+    });
+    
+    it(@"should unescape double-quoted strings correctly (pass #2)", ^{
+        NSString *fixture = @"one \"two \\\\ three\"";
+        NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
+        expect(components).to.equal(@[ @"one", @"two \\ three" ]);
+    });
+    
+    it(@"should unescape double-quoted strings correctly (pass #3)", ^{
+        NSString *fixture = @"one \"two \\n three\"";
+        NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
+        expect(components).to.equal(@[ @"one", @"two \\n three" ]);
+    });
+});
+
 SpecEnd
