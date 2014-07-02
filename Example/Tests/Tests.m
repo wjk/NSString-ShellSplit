@@ -6,37 +6,47 @@
 //  Copyright (c) 2014 William Kent. All rights reserved.
 //
 
+// This #include path is unfortunately brittle (i.e. it is sensitive to the way `pod lib create` creates
+// my project, and will break if this happens to change), but it's the only way I can find that will work.
+#import "../../NSString+WKShellSplit.h"
+
 SpecBegin(InitialSpecs)
 
-describe(@"these will fail", ^{
-
-    it(@"can do maths", ^{
-        expect(1).to.equal(2);
-    });
-
-    it(@"can read", ^{
-        expect(@"number").to.equal(@"string");
+describe(@"these should succeed", ^{
+    it(@"should split strings without quotes by whitespace", ^{
+        NSString *fixture = @"one two three";
+        NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
+        expect(components).to.equal(@[ @"one", @"two", @"three" ]);
     });
     
-    it(@"will wait and fail", ^AsyncBlock {
-        
+    it(@"should split strings with double quotes properly", ^{
+        NSString *fixture = @"one \"two three\" four";
+        NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
+        expect(components).to.equal(@[ @"one", @"\"two three\"", @"four" ]);
+    });
+    
+    it(@"should split strings with single quotes properly", ^{
+        NSString *fixture = @"one 'two three' four";
+        NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
+        expect(components).to.equal(@[ @"one", @"'two three'", @"four" ]);
+    });
+    
+    it(@"should split strings with both single and double quotes properly", ^{
+        NSString *fixture = @"one 'two three' \"four five\" six";
+        NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
+        expect(components).to.equal(@[ @"one", @"'two three'", @"\"four five\"", @"six" ]);
     });
 });
 
-describe(@"these will pass", ^{
-    
-    it(@"can do maths", ^{
-        expect(1).beLessThan(23);
+describe(@"these should fail", ^{
+    it(@"should reject strings with unbalanced single quotes", ^{
+        NSString *fixture = @"one 'two three";
+        expect(^{ [fixture componentsSplitUsingShellQuotingRules]; }).to.raise(nil);
     });
     
-    it(@"can read", ^{
-        expect(@"team").toNot.contain(@"I");
-    });
-    
-    it(@"will wait and fail", ^AsyncBlock {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_LOW, 0), ^{
-            done();
-        });
+    it(@"should reject strings with unbalanced double quotes", ^{
+        NSString *fixture = @"one \"two three";
+        expect(^{ [fixture componentsSplitUsingShellQuotingRules]; }).to.raise(nil);
     });
 });
 
