@@ -10,7 +10,7 @@
 // my project, and will break if this happens to change), but it's the only way I can find that will work.
 #import "../../NSString+WKShellSplit.h"
 
-SpecBegin(InitialSpecs)
+SpecBegin(ShellSplit)
 
 describe(@"basic positive tests", ^{
     it(@"should split strings without quotes by whitespace", ^{
