@@ -5,6 +5,11 @@
 
 #import "NSString+WKShellSplit.h"
 
+static NSString *WKSafeSubstring(NSString *whole, NSRange range) {
+    if (range.location == NSNotFound && range.length == 0) return nil;
+    else return [whole substringWithRange:range];
+}
+
 @implementation NSString (WKShellSplit)
 
 - (NSArray *)componentsSplitUsingShellQuotingRules {
@@ -21,19 +26,13 @@
         NSAssert(escapeRemovalRegex != nil, @"Could not compile escape-removal regex");
     });
     
-    NSString *(^safeSubstringWithRange)(NSString *, NSRange) = ^(NSString *whole, NSRange range){
-        // And yes, the nasty (NSString *) nil cast here is necessary.
-        if (range.location == NSNotFound && range.length == 0) return (NSString *) nil;
-        else return [whole substringWithRange:range];
-    };
-    
     [regex enumerateMatchesInString:self options:0 range:NSMakeRange(0, self.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-        NSString *word = safeSubstringWithRange(self, [result rangeAtIndex:1]);
-        NSString *sq = safeSubstringWithRange(self, [result rangeAtIndex:2]);
-        NSString *dq = safeSubstringWithRange(self, [result rangeAtIndex:3]);
-        NSString *esc = safeSubstringWithRange(self, [result rangeAtIndex:4]);
-        NSString *garbage = safeSubstringWithRange(self, [result rangeAtIndex:5]);
-        NSString *sep = safeSubstringWithRange(self, [result rangeAtIndex:6]);
+        NSString *word = WKSafeSubstring(self, [result rangeAtIndex:1]);
+        NSString *sq = WKSafeSubstring(self, [result rangeAtIndex:2]);
+        NSString *dq = WKSafeSubstring(self, [result rangeAtIndex:3]);
+        NSString *esc = WKSafeSubstring(self, [result rangeAtIndex:4]);
+        NSString *garbage = WKSafeSubstring(self, [result rangeAtIndex:5]);
+        NSString *sep = WKSafeSubstring(self, [result rangeAtIndex:6]);
         
         if (garbage.length != 0) [NSException raise:NSInvalidArgumentException format:@"Unmatched quote in string %@", self];
         
