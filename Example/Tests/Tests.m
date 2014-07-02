@@ -8,7 +8,8 @@
 
 // This #include path is unfortunately brittle (i.e. it is sensitive to the way `pod lib create` creates
 // my project, and will break if this happens to change), but it's the only way I can find that will work.
-#import "../../NSString+WKShellSplit.h"
+//#import "../../NSString+WKShellSplit.h"
+#import <NSString+ShellSplit/NSString+WKShellSplit.h>
 
 SpecBegin(ShellSplit)
 
