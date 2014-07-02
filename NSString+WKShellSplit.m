@@ -19,10 +19,6 @@ static NSString *WKUnescapeDoubleQuotedString(NSString *original) {
     return retval;
 }
 
-static NSString *WKUnescapeSingleQuotedString(NSString *original) {
-    return [original stringByReplacingOccurrencesOfString:@"\\'" withString:@"'"];
-}
-
 #pragma mark -
 
 @implementation NSString (WKShellSplit)
@@ -50,7 +46,7 @@ static NSString *WKUnescapeSingleQuotedString(NSString *original) {
         if (word != nil) {
             [field appendString:word];
         } else if (sq != nil) {
-            [field appendString:WKUnescapeSingleQuotedString(sq)];
+            [field appendString:sq];
         } else if (dq != nil) {
             [field appendString:WKUnescapeDoubleQuotedString(dq)];
         }
