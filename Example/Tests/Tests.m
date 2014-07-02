@@ -12,7 +12,7 @@
 
 SpecBegin(InitialSpecs)
 
-describe(@"these should succeed", ^{
+describe(@"basic positive tests", ^{
     it(@"should split strings without quotes by whitespace", ^{
         NSString *fixture = @"one two three";
         NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
@@ -38,7 +38,7 @@ describe(@"these should succeed", ^{
     });
 });
 
-describe(@"these should fail", ^{
+describe(@"basic negative tests", ^{
     it(@"should reject strings with unbalanced single quotes", ^{
         NSString *fixture = @"one 'two three";
         expect(^{ [fixture componentsSplitUsingShellQuotingRules]; }).to.raise(nil);
