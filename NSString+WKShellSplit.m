@@ -10,6 +10,21 @@ static NSString *WKSafeSubstring(NSString *whole, NSRange range) {
     else return [whole substringWithRange:range];
 }
 
+static NSString *WKUnescapeDoubleQuotedString(NSString *original) {
+    NSMutableString *retval = [original mutableCopy];
+    
+    [retval replaceOccurrencesOfString:@"\\\\" withString:@"\\" options:0 range:NSMakeRange(0, retval.length)];
+    [retval replaceOccurrencesOfString:@"\\\"" withString:@"\"" options:0 range:NSMakeRange(0, retval.length)];
+    
+    return retval;
+}
+
+static NSString *WKUnescapeSingleQuotedString(NSString *original) {
+    return [original stringByReplacingOccurrencesOfString:@"\\'" withString:@"'"];
+}
+
+#pragma mark -
+
 @implementation NSString (WKShellSplit)
 
 - (NSArray *)componentsSplitUsingShellQuotingRules {
@@ -17,13 +32,10 @@ static NSString *WKSafeSubstring(NSString *whole, NSRange range) {
     __block NSMutableString *field = [NSMutableString string];
     
     static NSRegularExpression *regex;
-    static NSRegularExpression *escapeRemovalRegex;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
         regex = [NSRegularExpression regularExpressionWithPattern:@"\\G\\s*(([^\\s\\\'\"]+)|'([^\\']*)'|\"((?:[^\\\"\\\\]|\\\\.?)*)\"|(\\S))(\\s|\\z)?" options:NSRegularExpressionAnchorsMatchLines error:NULL];
-        escapeRemovalRegex = [NSRegularExpression regularExpressionWithPattern:@"\\\\(.)" options:0 error:NULL];
         NSAssert(regex != nil, @"Could not compile regex");
-        NSAssert(escapeRemovalRegex != nil, @"Could not compile escape-removal regex");
     });
     
     [regex enumerateMatchesInString:self options:0 range:NSMakeRange(0, self.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
@@ -39,11 +51,11 @@ static NSString *WKSafeSubstring(NSString *whole, NSRange range) {
         if (word != nil) {
             [field appendString:word];
         } else if (sq != nil) {
-            [field appendString:sq];
+            [field appendString:WKUnescapeSingleQuotedString(sq)];
         } else if (dq != nil) {
-            [field appendString:[escapeRemovalRegex stringByReplacingMatchesInString:dq options:0 range:NSMakeRange(0, dq.length) withTemplate:@"$1"]];
+            [field appendString:WKUnescapeDoubleQuotedString(dq)];
         } else if (esc != nil) {
-            [field appendString:[escapeRemovalRegex stringByReplacingMatchesInString:esc options:0 range:NSMakeRange(0, esc.length) withTemplate:@"$1"]];
+            [field appendString:WKUnescapeDoubleQuotedString(esc)];
         }
         
         if (sep != nil) {
