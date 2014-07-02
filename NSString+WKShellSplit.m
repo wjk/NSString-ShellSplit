@@ -34,7 +34,7 @@ static NSString *WKUnescapeSingleQuotedString(NSString *original) {
     static NSRegularExpression *regex;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        regex = [NSRegularExpression regularExpressionWithPattern:@"\\G\\s*(([^\\s\\\'\"]+)|'([^\\']*)'|\"((?:[^\\\"\\\\]|\\\\.?)*)\"|(\\S))(\\s|\\z)?" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+        regex = [NSRegularExpression regularExpressionWithPattern:@"\\G\\s*(?>([^\\s\\\'\"]+)|'([^\\']*)'|\"((?:[^\\\"\\\\]|\\\\.?)*)\"|(\\S))(\\s|\\z)?" options:NSRegularExpressionAnchorsMatchLines error:NULL];
         NSAssert(regex != nil, @"Could not compile regex");
     });
     
@@ -42,9 +42,8 @@ static NSString *WKUnescapeSingleQuotedString(NSString *original) {
         NSString *word = WKSafeSubstring(self, [result rangeAtIndex:1]);
         NSString *sq = WKSafeSubstring(self, [result rangeAtIndex:2]);
         NSString *dq = WKSafeSubstring(self, [result rangeAtIndex:3]);
-        NSString *esc = WKSafeSubstring(self, [result rangeAtIndex:4]);
-        NSString *garbage = WKSafeSubstring(self, [result rangeAtIndex:5]);
-        NSString *sep = WKSafeSubstring(self, [result rangeAtIndex:6]);
+        NSString *garbage = WKSafeSubstring(self, [result rangeAtIndex:4]);
+        NSString *sep = WKSafeSubstring(self, [result rangeAtIndex:5]);
         
         if (garbage.length != 0) [NSException raise:NSInvalidArgumentException format:@"Unmatched quote in string %@", self];
         
@@ -54,8 +53,6 @@ static NSString *WKUnescapeSingleQuotedString(NSString *original) {
             [field appendString:WKUnescapeSingleQuotedString(sq)];
         } else if (dq != nil) {
             [field appendString:WKUnescapeDoubleQuotedString(dq)];
-        } else if (esc != nil) {
-            [field appendString:WKUnescapeDoubleQuotedString(esc)];
         }
         
         if (sep != nil) {

@@ -22,19 +22,19 @@ describe(@"tests of core functionality", ^{
     it(@"should split strings with double quotes properly", ^{
         NSString *fixture = @"one \"two three\" four";
         NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
-        expect(components).to.equal(@[ @"one", @"\"two three\"", @"four" ]);
+        expect(components).to.equal(@[ @"one", @"two three", @"four" ]);
     });
     
     it(@"should split strings with single quotes properly", ^{
         NSString *fixture = @"one 'two three' four";
         NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
-        expect(components).to.equal(@[ @"one", @"'two three'", @"four" ]);
+        expect(components).to.equal(@[ @"one", @"two three", @"four" ]);
     });
     
     it(@"should split strings with both single and double quotes properly", ^{
         NSString *fixture = @"one 'two three' \"four five\" six";
         NSArray *components = [fixture componentsSplitUsingShellQuotingRules];
-        expect(components).to.equal(@[ @"one", @"'two three'", @"\"four five\"", @"six" ]);
+        expect(components).to.equal(@[ @"one", @"two three", @"four five", @"six" ]);
     });
 
     it(@"should reject strings with unbalanced single quotes", ^{
