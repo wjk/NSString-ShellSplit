@@ -21,13 +21,19 @@
         NSAssert(escapeRemovalRegex != nil, @"Could not compile escape-removal regex");
     });
     
+    NSString *(^safeSubstringWithRange)(NSString *, NSRange) = ^(NSString *whole, NSRange range){
+        // And yes, the nasty (NSString *) nil cast here is necessary.
+        if (range.location == NSNotFound && range.length == 0) return (NSString *) nil;
+        else return [whole substringWithRange:range];
+    };
+    
     [regex enumerateMatchesInString:self options:0 range:NSMakeRange(0, self.length) usingBlock:^(NSTextCheckingResult *result, NSMatchingFlags flags, BOOL *stop) {
-        NSString *word = [self substringWithRange:[result rangeAtIndex:1]];
-        NSString *sq = [self substringWithRange:[result rangeAtIndex:2]];
-        NSString *dq = [self substringWithRange:[result rangeAtIndex:3]];
-        NSString *esc = [self substringWithRange:[result rangeAtIndex:4]];
-        NSString *garbage = [self substringWithRange:[result rangeAtIndex:5]];
-        NSString *sep = [self substringWithRange:[result rangeAtIndex:6]];
+        NSString *word = safeSubstringWithRange(self, [result rangeAtIndex:1]);
+        NSString *sq = safeSubstringWithRange(self, [result rangeAtIndex:2]);
+        NSString *dq = safeSubstringWithRange(self, [result rangeAtIndex:3]);
+        NSString *esc = safeSubstringWithRange(self, [result rangeAtIndex:4]);
+        NSString *garbage = safeSubstringWithRange(self, [result rangeAtIndex:5]);
+        NSString *sep = safeSubstringWithRange(self, [result rangeAtIndex:6]);
         
         if (garbage.length != 0) [NSException raise:NSInvalidArgumentException format:@"Unmatched quote in string %@", self];
         
@@ -41,7 +47,7 @@
             [field appendString:[escapeRemovalRegex stringByReplacingMatchesInString:esc options:0 range:NSMakeRange(0, esc.length) withTemplate:@"$1"]];
         }
         
-        if (sep.length != 0) {
+        if (sep != nil) {
             [words addObject:field];
             field = [NSMutableString string];
         }
