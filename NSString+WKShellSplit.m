@@ -15,8 +15,8 @@
     static NSRegularExpression *escapeRemovalRegex;
     static dispatch_once_t onceToken;
     dispatch_once(&onceToken, ^{
-        regex = [NSRegularExpression regularExpressionWithPattern:@"\\G\\s*(?>([^\\s\\\\\\'\\\"]+)|'([^\\']*)'|\"((?:[^\\\"\\\\]|\\\\.?)|(\\S))(\\s|\\z)?" options:NSRegularExpressionAnchorsMatchLines error:NULL];
-        escapeRemovalRegex = [NSRegularExpression regularExpressionWithPattern:@"\\(.)" options:0 error:NULL];
+        regex = [NSRegularExpression regularExpressionWithPattern:@"\\s*(?>([^\\s\\\'\"]+)|'([^\\']*)'|\"((?:[^\\\"\\\\]|\\\\.?)*)|(\\S))(\\s|\\z)?" options:NSRegularExpressionAnchorsMatchLines error:NULL];
+        escapeRemovalRegex = [NSRegularExpression regularExpressionWithPattern:@"\\\\(.)" options:0 error:NULL];
         NSAssert(regex != nil, @"Could not compile regex");
         NSAssert(escapeRemovalRegex != nil, @"Could not compile escape-removal regex");
     });
