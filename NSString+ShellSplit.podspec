@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = "NSString+ShellSplit"
-  s.version          = "0.0.1"
+  s.version          = "1.0.0"
   s.summary          = "A category to split NSStrings by shell-quoting rules"
   s.homepage         = "https://github.com/wjk/NSString-ShellSplit"
   s.license          = 'Ruby'
