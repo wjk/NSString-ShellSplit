@@ -1,8 +1,8 @@
 # NSString+ShellSplit
 
-[![Version](https://img.shields.io/cocoapods/v/NSString+ShellSplit.svg?style=flat)](http://cocoadocs.org/docsets/NSString+ShellSplit)
-[![License](https://img.shields.io/cocoapods/l/NSString+ShellSplit.svg?style=flat)](http://cocoadocs.org/docsets/NSString+ShellSplit)
-[![Platform](https://img.shields.io/cocoapods/p/NSString+ShellSplit.svg?style=flat)](http://cocoadocs.org/docsets/NSString+ShellSplit)
+[![Version](https://img.shields.io/cocoapods/v/NSString-ShellSplit.svg?style=flat)](http://cocoadocs.org/docsets/NSString+ShellSplit)
+[![License](https://img.shields.io/cocoapods/l/NSString-ShellSplit.svg?style=flat)](http://cocoadocs.org/docsets/NSString+ShellSplit)
+[![Platform](https://img.shields.io/cocoapods/p/NSString-ShellSplit.svg?style=flat)](http://cocoadocs.org/docsets/NSString+ShellSplit)
 
 ## Installation
 
